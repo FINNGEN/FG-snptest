@@ -81,14 +81,14 @@ _Requested but **not** included_ because these SNPs did not pass QC for analysis
 # Usage
 ### Create Docker image
 ```
-docker build -t gcr.io/finngen-refinery-dev/kr-recessive:0.7 -f docker/Dockerfile .
-docker -- push gcr.io/finngen-refinery-dev/kr-recessive:0.7
+docker build -t gcr.io/finngen-refinery-dev/kv-snptest:0.1 -f docker/Dockerfile .
+docker -- push gcr.io/finngen-refinery-dev/kv-snptest:0.1
 ```
 
 ### What is being run?
 
 #### STEP 1: Cleaning the phenotype file and sample selection
-In `snptest_recessive_1.R`, it is controlled by `snptest.wdl` to:
+In `FG-snptest_1.R`, it is controlled by `snptest.wdl` to:
 
 1) job is split up 1 job per phenotype
 2) each phenotype is loaded in from the covariate file
@@ -109,7 +109,7 @@ the method that procudes the larger number of cases is chosen
 * a list of samples to remove is output and saved to file
 
 #### STEP 2: Running SNPTEST
-In `snptest_recessive_2.R`, it is controlled by `snptest_sub.wdl`. The `sub` script needs to be zipped prior to submission because `cromwell` doesn't allow for nested `scatter` functions. This script is run for:
+In `FG-snptest_2.R`, it is controlled by `snptest_sub.wdl`. The `sub` script needs to be zipped prior to submission because `cromwell` doesn't allow for nested `scatter` functions. This script is run for:
 
 1) job is split up 1 job per `bgen` file chunk
 2) takes in the output from `STEP 1` above.

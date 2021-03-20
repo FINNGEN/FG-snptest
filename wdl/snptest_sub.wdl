@@ -8,6 +8,7 @@ task test {
     String covariates #string of cov from json
     File samplefile #from null run
     File varList
+    Int option #1=Additive, 2=Dominant, 3=Recessive, 4=General and 5=Heterozygote
     Array[File] bgenfiles #bgen file name from workflow
 
     command {
@@ -25,13 +26,14 @@ task test {
         processes = set()
         # continuous traits don't have this file and optional outputs are not currently supported
         cmd_prefix = 'export MKL_NUM_THREADS=1; export MKL_DYNAMIC=false; export OMP_NUM_THREADS=1; export OMP_DYNAMIC=false; \
-            snptest_recessive_2.R \
+            FG-snptest_2.R \
                 --plinkFile=${bedfile} \
                 --phenoCol=${pheno} \
                 --covarColList=${covariates} \
                 --outputPrefix=${prefix} \
                 --sampleFile=${samplefile} \
-                --snprange=${varList} '
+                --snprange=${varList} \
+                --transmission=${option} '
         for file in '${sep=" " bgenfiles}'.split(' '):
             cmd = cmd_prefix + '--bgenFile=' + file
             print file
@@ -119,10 +121,12 @@ workflow test_combine {
     File bgenlistfile
     File varList
     Array[Array[String]] bgenfiles2D = read_tsv(bgenlistfile)
+    Int option
 
     scatter (bgenfiles in bgenfiles2D) {
         call test {
-            input: docker=docker, pheno=pheno, varList=varList, samplefile=samplefile, bgenfiles=bgenfiles, bedfile=bedfile, covariates=covariates
+            input: docker=docker, pheno=pheno, varList=varList, samplefile=samplefile,
+             bgenfiles=bgenfiles, bedfile=bedfile, covariates=covariates, option=option
         }
     }
 

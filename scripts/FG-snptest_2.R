@@ -37,7 +37,9 @@ option_list <- list(
   make_option("--outputFile", type="character", default="",
     help="the output file"),
   make_option("--snprange", type="character", default="",
-    help="the snp range file")  
+    help="the snp range file"),
+  make_option("--transmission", type="integer", default="",
+    help="the transmission option where 1=Additive, 2=Dominant, 3=Recessive, 4=General and 5=Heterozygote")
  )   
 
 ## list of options
@@ -60,6 +62,7 @@ bgenfile <- opt$bgenFile
 prefix <- opt$outputPrefix
 covars_collapsed = glue::glue_collapse(covars, sep = " ")
 snprange <- opt$snprange
+transmissionOption <- opt$transmission
 
 cmd <- paste("plink --bgen ", {bgenfile},
 " ref-unknown --sample ", {bgenfile}, ".sample ",
@@ -71,8 +74,9 @@ print("running snptest")
 # Run SNPTEST --------------
 #frequentist 1=Additive, 2=Dominant, 3=Recessive, 4=General and 5=Heterozygote
 cmd <- paste("snptest -data filteredSNPs.bgen ", {samplefile}, " -o ", {prefix}, 
-  ".snptest-recessive.out -frequentist 3  -method score -cov_names ", {covars_collapsed}, 
+  ".snptest-recessive.out -frequentist ", transmissionOption, " -method score -cov_names ", {covars_collapsed}, 
   " -pheno ", {phenotype}, sep="")
+
 print(cmd)
 print(covars_collapsed)
 system(cmd)

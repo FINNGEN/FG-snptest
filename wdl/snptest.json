@@ -16,6 +16,7 @@
 
 
     "snptest.test_combine.test.prefix": "",
+    "snptest.test_combine.test.option": 2,
     "snptest.test_combine.combine.prefix": "",
     "snptest.test_combine.test.bedfile": "gs://r6_data/grm/R6_GRM_V1_LD_0.1.bed",
 

@@ -16,7 +16,7 @@ task null {
 
     command {
 
-        snptest_recessive_1.R \
+        FG-snptest_1.R \
             --phenoFile=${phenofile} \
             --phenoCol=${pheno} \
             --covarColList=${covariates} \
