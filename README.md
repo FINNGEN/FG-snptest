@@ -93,9 +93,10 @@ Most importantly, pick a transmission that you want to be analysed, particularly
     ```
     "snptest.test_combine.test.option": 2,
     ```
+    
 where, 
 
-    `1`=Additive, `2`=Dominant, `3`=Recessive, `4`=General, and 5=Heterozygote
+    1=Additive, 2=Dominant, 3=Recessive, 4=General, and 5=Heterozygote
 
 ### What is being run?
 
