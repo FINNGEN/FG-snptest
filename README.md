@@ -85,6 +85,18 @@ docker build -t gcr.io/finngen-refinery-dev/kv-snptest:0.1 -f docker/Dockerfile 
 docker -- push gcr.io/finngen-refinery-dev/kv-snptest:0.1
 ```
 
+### Edit the .json file
+Note where all the files that you need to run are located.
+
+#### Pick a transmission to analyze  
+Most importantly, pick a transmission that you want to be analysed, particularly in line 19
+    ```
+    "snptest.test_combine.test.option": 2,
+    ```
+where, 
+
+    `1`=Additive, `2`=Dominant, `3`=Recessive, `4`=General, and 5=Heterozygote
+
 ### What is being run?
 
 #### STEP 1: Cleaning the phenotype file and sample selection
