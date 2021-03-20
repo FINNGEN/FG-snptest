@@ -72,7 +72,7 @@ system(cmd)
 
 print("running snptest")
 # Run SNPTEST --------------
-#frequentist 1=Additive, 2=Dominant, 3=Recessive, 4=General and 5=Heterozygote
+#frequentist options 1=Additive, 2=Dominant, 3=Recessive, 4=General and 5=Heterozygote
 cmd <- paste("snptest -data filteredSNPs.bgen ", {samplefile}, " -o ", {prefix}, 
   ".snptest-recessive.out -frequentist ", transmissionOption, " -method score -cov_names ", {covars_collapsed}, 
   " -pheno ", {phenotype}, sep="")

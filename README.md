@@ -85,19 +85,39 @@ docker build -t gcr.io/finngen-refinery-dev/kv-snptest:0.1 -f docker/Dockerfile 
 docker -- push gcr.io/finngen-refinery-dev/kv-snptest:0.1
 ```
 
-### Edit the .json file
+### Edit the files in the `wdl` dir
+#### `.json` file
 Note where all the files that you need to run are located.
 
-#### Pick a transmission to analyze  
+##### Pick a transmission to analyze  
 Most importantly, pick a transmission that you want to be analysed, particularly in line 19
     ```
     "snptest.test_combine.test.option": 2,
     ```
-    
+
 where, 
 
     1=Additive, 2=Dominant, 3=Recessive, 4=General, and 5=Heterozygote
 
+#### Compress the sub file 
+```
+cd wdl
+zip snptest_sub.zip snptest_sub.wdl
+```
+
+### Submission onto cromwell using `cromwell_interact.py`
+Script from Pietro that allows easy submission of `wdl` scripts onto cromwell found [here](https://github.com/FINNGEN/CromwellInteract) 
+
+```
+#The aliases below already point to the python script and the appropriate cromwell server
+#connect to a cromwell server
+cw connect cromwell-fg-1
+
+#submit cromwell job for this
+cw submit --wdl wdl/snptest.wdl --inputs wdl/snptest.json --deps wdl/snptest_sub.zip
+
+### REMEMBER TO CP THE SUBMISSION ID ###
+```
 ### What is being run?
 
 #### STEP 1: Cleaning the phenotype file and sample selection
