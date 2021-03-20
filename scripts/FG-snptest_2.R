@@ -52,12 +52,8 @@ phenotype <- opt$phenoCol
 covars <- strsplit(opt$covarColList,",")[[1]]
 print("reading in covars")
 
-# Load phenotype + covars data ------
+#read in file names and options
 samplefile <- opt$sampleFile
-#sample_phenotype <-
-#data.table::fread(samplefile) %>% as.data.frame()
-#print("loaded sample file")
-
 bgenfile <- opt$bgenFile
 prefix <- opt$outputPrefix
 covars_collapsed = glue::glue_collapse(covars, sep = " ")
@@ -66,15 +62,24 @@ transmissionOption <- opt$transmission
 
 cmd <- paste("plink --bgen ", {bgenfile},
 " ref-unknown --sample ", {bgenfile}, ".sample ",
-"--extract range ", {snprange}, "--export bgen-1.1 --out filteredSNPs", sep="")
+"--extract range ", {snprange}, " --export bgen-1.3 --out filteredSNPs",
+ sep="")
 
+#run plink command to filter for snps within the range 
 system(cmd)
+
+
+transmissionPrefix <- ifelse(transmissionOption==1, "Additive", 
+                        ifelse(transmissionOption==2, "Dominant",
+                          ifelse(transmissionOption==3, "Recessive",
+                            ifelse(transmissionOption==4, "General",
+                              ifelse(transmissionOption==5, "Heterozygote", "")))))
 
 print("running snptest")
 # Run SNPTEST --------------
 #frequentist options 1=Additive, 2=Dominant, 3=Recessive, 4=General and 5=Heterozygote
-cmd <- paste("snptest -data filteredSNPs.bgen ", {samplefile}, " -o ", {prefix}, 
-  ".snptest-recessive.out -frequentist ", transmissionOption, " -method score -cov_names ", {covars_collapsed}, 
+cmd <- paste("snptest -data filteredSNPs.bgen ", {samplefile}, " -o ", {prefix}, "_", transmissionPrefix,
+  ".snptest.out -frequentist ", transmissionOption, " -method score -cov_names ", {covars_collapsed}, 
   " -pheno ", {phenotype}, sep="")
 
 print(cmd)
@@ -82,3 +87,10 @@ print(covars_collapsed)
 system(cmd)
 
 print("ran snptest")
+
+print("cleaning snptest output for output lines that we want")
+temp <- readLines(paste(prefix, "_", transmissionPrefix, ".snptest.out", sep="") ) 
+temp <- t(as.data.frame(strsplit(temp[c(grep('alternate_ids', temp), grep('alternate_ids', temp)+1) ], " " ) ) )
+rownames(temp) <- NULL
+
+write.table(temp, paste(prefix, "_", transmissionPrefix, ".snptest.out", sep=""), sep="\t", quote = F, col.names = F, row.names = F)

@@ -61,7 +61,6 @@ print("loaded sample file")
 
 #covars <- "SEX_IMPUTED,AGE_AT_DEATH_OR_NOW,PC1,PC2,PC3,PC4,PC5,BATCH_Axiom,BATCH_DS1_BOTNIA_Dgi_norm,BATCH_DS10_FINRISK_Palotie_norm,BATCH_DS11_FINRISK_PredictCVD_COROGENE_Tarto_norm,BATCH_DS12_FINRISK_Summit_norm,BATCH_DS13_FINRISK_Bf_norm,BATCH_DS14_GENERISK_norm,BATCH_DS15_H2000_Broad_norm,BATCH_DS16_H2000_Fimm_norm,BATCH_DS17_H2000_Genmets_norm,BATCH_DS18_MIGRAINE_1_norm,BATCH_DS19_MIGRAINE_2_norm,BATCH_DS2_BOTNIA_T2dgo_norm,BATCH_DS20_SUPER_1_norm,BATCH_DS21_SUPER_2_norm,BATCH_DS22_TWINS_1_norm,BATCH_DS23_TWINS_2_norm,BATCH_DS24_SUPER_3_norm,BATCH_DS25_BOTNIA_Regeneron_norm,BATCH_DS3_COROGENE_Sanger_norm,BATCH_DS4_FINRISK_Corogene_norm,BATCH_DS5_FINRISK_Engage_norm,BATCH_DS6_FINRISK_FR02_Broad_norm,BATCH_DS7_FINRISK_FR12_norm,BATCH_DS8_FINRISK_Finpcga_norm,BATCH_DS9_FINRISK_Mrpred_norm"
 #covars <- strsplit(covars,",")[[1]]
-#i <- 1
 #phenotype <- "I9_HYPERTENSION"
 phenotype <- opt$phenoCol
 sample_phenotype <- sample %>% 
@@ -80,11 +79,11 @@ print("merged phenotype file with second header")
 
 
 ## samples to exclude
-#samples_related <- read.table("../r6_plinkKinship/finngen_R6_kinship_couples.kin0", header=T, sep="\t")
+#samples_related <- "../r6_plinkKinship/finngen_R6_kinship_couples.kin0"
 samples_related <- opt$relatedSamples
 #samples_related <- read.table(samples_related, header=F)
 #samples_related <- dat_pheno_[!(samples_related$FID1 %in% dat_pheno_$FINNGENID),]$FINNGENID
-#age for controls is including people >55 years old
+#age for controls is including people >55 years old, this EXCLUDES <=55
 samples_young_controls <- dat_pheno_[dat_pheno_$AGE_AT_DEATH_OR_NOW <= 55 & dat_pheno_[[phenotype]]==0, ]$FINNGENID
 print("filter created for young controls")
 write.table(samples_young_controls, paste(phenotype, "_controls.txt", sep="") , sep="\t", quote = F, col.names = F, row.names = F)
@@ -92,6 +91,11 @@ write.table(samples_young_controls, paste(phenotype, "_controls.txt", sep="") , 
 ###Using maximal independent script
 cases <- dat_pheno_[dat_pheno_[[phenotype]]==1 & !is.na(dat_pheno_[[phenotype]]),]$FINNGENID
 write.table(cases, paste(phenotype, "_cases.txt", sep="") , sep="\t", quote = F, col.names = F, row.names = F)
+
+
+#cmd <- paste("python3.8   /home/kumar/maximally-independent-phenotypes/Scripts/pheno_independent.py --related-couples ", {samples_related}, 
+ # " -o . -p ", {phenotype}, " --cases ", {phenotype},"_cases.txt ", "--rejected ", 
+ # {phenotype}, "_controls.txt", sep="")
 
 cmd <- paste("python3.8 /usr/local/bin/pheno_independent.py --related-couples ", {samples_related}, 
   " -o . -p ", {phenotype}, " --cases ", {phenotype},"_cases.txt ", "--rejected ", 

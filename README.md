@@ -101,8 +101,7 @@ where,
 
 #### Compress the sub file 
 ```
-cd wdl
-zip snptest_sub.zip snptest_sub.wdl
+zip wdl/snptest_sub.zip wdl/snptest_sub.wdl
 ```
 
 ### Submission onto cromwell using `cromwell_interact.py`
@@ -142,7 +141,7 @@ the method that procudes the larger number of cases is chosen
 * a list of samples to remove is output and saved to file
 
 #### STEP 2: Running SNPTEST
-In `FG-snptest_2.R`, it is controlled by `snptest_sub.wdl`. The `sub` script needs to be zipped prior to submission because `cromwell` doesn't allow for nested `scatter` functions. This script is run for:
+In `FG-snptest_2.R`, it is controlled by `snptest_sub.wdl`. The `sub` script needs to be zipped prior to submission because `cromwell` doesn't allow for nested `scatter` functions. This script is run for `test_combine.test`:
 
 1) job is split up 1 job per `bgen` file chunk
 2) takes in the output from `STEP 1` above.
@@ -151,3 +150,6 @@ In `FG-snptest_2.R`, it is controlled by `snptest_sub.wdl`. The `sub` script nee
 4b) _if that chunk **does** contain any of the tested SNPs_, continues running SNPTEST
 5) spits out the output file using the prefix that we set in the R file
 6) combines the files by chromosomes
+
+#### STEP 3: Output
+Using  `snptest_sub.wdl`, the `test_combine.combine` function combines all the files together where each file is also annotated with the **transmission** that was ran. 
