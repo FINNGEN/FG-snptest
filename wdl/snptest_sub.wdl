@@ -13,11 +13,10 @@ task test {
 
     command {
         
-        python3 <<EOF
+        python3.8 <<EOF
         import os
         import subprocess
         import time
-        print bedfile 
         print pheno
         print covariates
         print prefix
