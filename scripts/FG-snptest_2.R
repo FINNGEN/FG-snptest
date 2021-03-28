@@ -38,8 +38,10 @@ option_list <- list(
     help="the output file"),
   make_option("--snprange", type="character", default="",
     help="the snp range file"),
-  make_option("--transmission", type="integer", default="",
-    help="the transmission option where 1=Additive, 2=Dominant, 3=Recessive, 4=General and 5=Heterozygote")
+  make_option("--transmission", type="character", default="",
+    help="the transmission option where 1=Additive, 2=Dominant, 3=Recessive, 4=General and 5=Heterozygote"),
+  make_option("--bsampleFile", type="character", default="",
+    help="the bgen sample file for all the samples")
  )   
 
 ## list of options
@@ -58,29 +60,46 @@ bgenfile <- opt$bgenFile
 prefix <- opt$outputPrefix
 covars_collapsed = glue::glue_collapse(covars, sep = " ")
 snprange <- opt$snprange
-transmissionOption <- opt$transmission
+bsamplefile <- opt$bsampleFile
 
-cmd <- paste("plink --bgen ", {bgenfile},
-" ref-unknown --sample ", {bgenfile}, ".sample ",
-"--extract range ", {snprange}, " --export bgen-1.3 --out filteredSNPs",
+if(length(grep(",", opt$transmission))!=0){
+  transmissionOption <- strsplit(opt$transmission,",")[[1]]
+  transmissionOption = glue::glue_collapse(transmissionOption, sep = " ")
+} else{
+  transmissionOption <- opt$transmission}
+
+
+
+#bgenfile <- "finngen_R6_19.3.bgen"
+#samplefile <- "R6_full_samples_T2D.sample"
+#transmissionOption <- 1
+#prefix <- ""
+#phenotype <- "T2D"
+#snprange <- "20210323_var_T2D_CVD.txt"
+#bsamplefile <- "../r6/R6_271341_samples.sample"
+
+cmd <- paste("plink --bgen ", bgenfile,
+" ref-unknown --sample ", bsamplefile,
+" --extract range ", snprange, " --allow-extra-chr --export bgen-1.3 --out filteredSNPs",
  sep="")
 
 #run plink command to filter for snps within the range 
 system(cmd)
 
+#transmissionOption <- 1
+#prefix <- ""
 
-transmissionPrefix <- ifelse(transmissionOption==1, "Additive", 
-                        ifelse(transmissionOption==2, "Dominant",
-                          ifelse(transmissionOption==3, "Recessive",
-                            ifelse(transmissionOption==4, "General",
-                              ifelse(transmissionOption==5, "Heterozygote", "")))))
+list.files(pattern="*.bgen")
+file.size("filteredSNPs.bgen")
 
 print("running snptest")
 # Run SNPTEST --------------
 #frequentist options 1=Additive, 2=Dominant, 3=Recessive, 4=General and 5=Heterozygote
-cmd <- paste("snptest -data filteredSNPs.bgen ", {samplefile}, " -o ", {prefix}, "_", transmissionPrefix,
-  ".snptest.out -frequentist ", transmissionOption, " -method score -cov_names ", {covars_collapsed}, 
-  " -pheno ", {phenotype}, sep="")
+cmd <- paste("snptest -data filteredSNPs.bgen ", samplefile, " -o ", prefix, 
+  ".snptest.out -frequentist ", transmissionOption ," -method newml -cov_names ", {covars_collapsed}, 
+  " -pheno ", phenotype, sep="")
+## To sex stratify, use this flag! 
+  #-stratify_on SEX_IMPUTED
 
 print(cmd)
 print(covars_collapsed)
@@ -88,9 +107,9 @@ system(cmd)
 
 print("ran snptest")
 
-print("cleaning snptest output for output lines that we want")
-temp <- readLines(paste(prefix, "_", transmissionPrefix, ".snptest.out", sep="") ) 
-temp <- t(as.data.frame(strsplit(temp[c(grep('alternate_ids', temp), grep('alternate_ids', temp)+1) ], " " ) ) )
-rownames(temp) <- NULL
+#print("cleaning snptest output for output lines that we want")
+#temp <- readLines(paste(prefix, ".snptest.out", sep="") ) 
+#temp <- t(as.data.frame(strsplit(temp[c(grep('alternate_ids', temp), grep('alternate_ids', temp)+1) ], " " ) ) )
+#rownames(temp) <- NULL
 
-write.table(temp, paste(prefix, "_", transmissionPrefix, ".snptest.out", sep=""), sep="\t", quote = F, col.names = F, row.names = F)
+#write.table(temp, paste(prefix, ".snptest.out", sep=""), sep="\t", quote = F, col.names = F, row.names = F)

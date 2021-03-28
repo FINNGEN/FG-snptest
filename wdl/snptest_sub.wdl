@@ -8,7 +8,8 @@ task test {
     String covariates #string of cov from json
     File samplefile #from null run
     File varList
-    Int option #1=Additive, 2=Dominant, 3=Recessive, 4=General and 5=Heterozygote
+    File bsamplefile
+    String option #1=Additive, 2=Dominant, 3=Recessive, 4=General and 5=Heterozygote
     Array[File] bgenfiles #bgen file name from workflow
 
     command {
@@ -17,11 +18,7 @@ task test {
         import os
         import subprocess
         import time
-        print pheno
-        print covariates
-        print prefix
-        print samplefile
-        print bgenfiles
+            
         processes = set()
         # continuous traits don't have this file and optional outputs are not currently supported
         cmd_prefix = 'export MKL_NUM_THREADS=1; export MKL_DYNAMIC=false; export OMP_NUM_THREADS=1; export OMP_DYNAMIC=false; \
@@ -32,12 +29,12 @@ task test {
                 --outputPrefix=${prefix} \
                 --sampleFile=${samplefile} \
                 --snprange=${varList} \
-                --transmission=${option} '
+                --transmission=${option} \
+                --bsampleFile=${bsamplefile} '
         for file in '${sep=" " bgenfiles}'.split(' '):
             cmd = cmd_prefix + '--bgenFile=' + file
-            print file
-            cmd = cmd + ' --outputFile=${prefix}' + os.path.basename(file) + '.snptest-recessive.txt'
-            logfile = open('snptest-recessive_log_${prefix}' + os.path.basename(file) + '.txt', 'w')
+            cmd = cmd + ' --outputFile=${prefix}' + os.path.basename(file) + '.snptest.txt'
+            logfile = open('snptest_log_${prefix}' + os.path.basename(file) + '.txt', 'w')
             processes.add(subprocess.Popen(cmd, shell=True, stdout=logfile))
         print(time.strftime("%Y/%m/%d %H:%M:%S") + ' ' + str(len(processes)) + ' processes started', flush=True)
         n_rc0 = 0
@@ -56,15 +53,15 @@ task test {
     }
 
     output {
-        Array[File] out = glob("*.snptest-recessive.out")
-        Array[File] logs = glob("snptest-recessive_log_*.txt")
+        Array[File] out = glob("*.snptest.out")
+        Array[File] logs = glob("snptest_log_*.txt")
     }
 
   runtime {
         docker: "${docker}"
         cpu: length(bgenfiles)
         memory: (4 * length(bgenfiles)) + " GB"
-        disks: "local-disk " + (length(bgenfiles) * ceil(size(bgenfiles[0], "G")) + 5) + " HDD"
+        disks: "local-disk " + (length(bgenfiles) * ceil(size(bgenfiles[0], "G")) + 20) + " HDD"
         zones: "europe-west1-b"
         preemptible: 2
         noAddress: true
@@ -89,13 +86,13 @@ task combine {
         cat \
         <(head -n 1 ${results[0]}) \
         <(for file in ${sep=" " results}; do tail -n+2 $file; done) \
-        | bgzip > ${prefix}${pheno}.snptest-recessive.out.gz
+        | bgzip > ${prefix}${pheno}.snptest.out.gz
 
     >>>
 
     output {
         
-        File out = prefix + pheno + ".snptest-recessive.out.gz"
+        File out = prefix + pheno + ".snptest.out.gz"
 
     }
 
@@ -119,13 +116,14 @@ workflow test_combine {
     String covariates
     File bgenlistfile
     File varList
+    File bsamplefile
     Array[Array[String]] bgenfiles2D = read_tsv(bgenlistfile)
-    Int option
+    String option
 
     scatter (bgenfiles in bgenfiles2D) {
         call test {
             input: docker=docker, pheno=pheno, varList=varList, samplefile=samplefile,
-             bgenfiles=bgenfiles, bedfile=bedfile, covariates=covariates, option=option
+             bgenfiles=bgenfiles, bedfile=bedfile, covariates=covariates, option=option, bsamplefile=bsamplefile
         }
     }
 

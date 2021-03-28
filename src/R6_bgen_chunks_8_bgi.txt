@@ -1,0 +1,1 @@
+gs://r6_data/bgen/v2/chunks/finngen_R6_23.6.bgen.bgi.sample.sample	gs://r6_data/bgen/v2/chunks/finngen_R6_23.5.bgen.bgi.sample.sample	gs://r6_data/bgen/v2/chunks/finngen_R6_23.4.bgen.bgi.sample.sample	gs://r6_data/bgen/v2/chunks/finngen_R6_23.3.bgen.bgi.sample.sample

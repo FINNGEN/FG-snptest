@@ -1,0 +1,1 @@
+gs://r6_data/bgen/v2/chunks/finngen_R6_19.3.bgen
