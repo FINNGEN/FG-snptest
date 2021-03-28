@@ -158,5 +158,5 @@ Using  `snptest_sub.wdl`, the `test_combine.combine` function combines all the f
 To check on the output:
 `<WORKFLOW_ID>` is the Cromwell workflow ID that was obtained from the submission of this job to Cromwell.
 ```
-gs://fg-cromwell_fresh/snptest/<WORKFLOW_ID>/call-test_combine/shard-*/sub.test_combine/**/call-combine/*.snptest-recessive.out.gz
+gs://fg-cromwell_fresh/snptest/<WORKFLOW_ID>/call-test_combine/shard-*/sub.test_combine/**/call-combine/*.snptest.out.gz
 ```
