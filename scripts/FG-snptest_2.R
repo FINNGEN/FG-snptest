@@ -96,7 +96,7 @@ print("running snptest")
 # Run SNPTEST --------------
 #frequentist options 1=Additive, 2=Dominant, 3=Recessive, 4=General and 5=Heterozygote
 cmd <- paste("snptest -data filteredSNPs.bgen ", samplefile, " -o ", prefix, 
-  ".snptest.out -frequentist ", transmissionOption ," -method newml -cov_names ", {covars_collapsed}, 
+  ".snptest.out -frequentist ", transmissionOption ," -method em -cov_names ", {covars_collapsed}, 
   " -pheno ", phenotype, sep="")
 ## To sex stratify, use this flag! 
   #-stratify_on SEX_IMPUTED
