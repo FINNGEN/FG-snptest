@@ -123,6 +123,11 @@ where,
 
     1=Additive, 2=Dominant, 3=Recessive, 4=General, and 5=Heterozygote
 
+Or you can also put in more than one transmission separated by commas
+    ```
+    "snptest.test_combine.test.option": 1,2,3,4,5
+    ```
+
 #### Compress the sub file 
 ```
 zip wdl/snptest_sub.zip wdl/snptest_sub.wdl
@@ -149,6 +154,13 @@ In `FG-snptest_1.R`, it is controlled by `snptest.wdl` to:
 1) job is split up 1 job per phenotype
 2) each phenotype is loaded in from the covariate file
 3) [maximally independent phenotype](https://github.com/FINNGEN/maximally-independent-phenotypes) sample selection
+3.1) the file used to determine the relatedness  pairs can be run using the following command:
+```
+king -b finngen_R6_kinship.bed --related --degree 2
+```
+Grep out pairs and you are ready to go, much like available in
+`gs://veerapen-fg/finngen_R6_kinship_couples.kin0`
+
 4) filter for controls who are less than 55 years old
 5) write out per phenotype file of samples for the next step which is per chromosome analysis
 
