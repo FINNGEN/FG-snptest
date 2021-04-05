@@ -87,6 +87,29 @@ docker -- push gcr.io/finngen-refinery-dev/kv-snptest:0.1
 ```
 
 ### Edit the files in the `wdl` dir
+#### create the variant file
+The variant UCSC `.bed` file should contain the following information, **without** header
+| chromosome number |  start pos | stop pos |
+|------|--------------| --------------|
+
+```
+1 219513098 219513098
+1 39181366 39181366
+2 208074544 208074548
+```
+
+Use the helper script `scripts/helperScript_SNPIDs.R` in order to convert the above `.bed` file into a PLINK `.bim` file. This script will search for appropriate SNP IDs using FinnGen PLINK `.bim` file to match with the `.bgen` chunk files.
+
+The FinnGen PLINK `.bim` file is on `gs://r6_data/plink/finngen_R6.bim` and should be downloaded to your VM prior to getting this helper script to run. I did not create the script to run out of the box. You'd have to use R and copy and paste the lines into the terminal to obtain the final output (**without** header information).
+
+| chromosome number |  matched SNP ID | recombination rate | pos | ref allele | alt allele | chr_pos | 
+|------|--------------| --------------|------|--------------| --------------|--------------|
+```
+1	chr1_39181366_G_A	0	39181366	A	G	1_39181366
+1	chr1_219513098_C_T	0	219513098	T	C	1_219513098
+5	chr5_52792437_G_A	0	52792437	A	G	5_52792437
+```
+
 #### `.json` file
 Note where all the files that you need to run are located.
 
@@ -158,5 +181,17 @@ Using  `snptest_sub.wdl`, the `test_combine.combine` function combines all the f
 To check on the output:
 `<WORKFLOW_ID>` is the Cromwell workflow ID that was obtained from the submission of this job to Cromwell.
 ```
+#LOCATION of files
+#for the combined gz file containing header (with run parameter) information
 gs://fg-cromwell_fresh/snptest/<WORKFLOW_ID>/call-test_combine/shard-*/sub.test_combine/**/call-combine/*.snptest.out.gz
+
+#for the uncombined output files 
+gs://fg-cromwell_fresh/snptest/<WORKFLOW_ID>/call-test_combine/shard-*/sub.test_combine/**/call-test/*.snptest.out
 ```
+
+
+Submission IDs that worked (FINALLY):
+
+20210404: `e33af051-4528-4e1c-a42e-f97464a010d`  #CVD
+
+20210404: `acaa058e-e1e4-4fd6-96a8-a3631577a815` #T2D

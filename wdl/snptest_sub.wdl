@@ -33,7 +33,7 @@ task test {
                 --bsampleFile=${bsamplefile} '
         for file in '${sep=" " bgenfiles}'.split(' '):
             cmd = cmd_prefix + '--bgenFile=' + file
-            cmd = cmd + ' --outputFile=${prefix}' + os.path.basename(file) + '.snptest.txt'
+            cmd = cmd + ' --outputFile=${prefix}' + os.path.basename(file) + '.snptest.out'
             logfile = open('snptest_log_${prefix}' + os.path.basename(file) + '.txt', 'w')
             processes.add(subprocess.Popen(cmd, shell=True, stdout=logfile))
         print(time.strftime("%Y/%m/%d %H:%M:%S") + ' ' + str(len(processes)) + ' processes started', flush=True)
@@ -60,7 +60,7 @@ task test {
   runtime {
         docker: "${docker}"
         cpu: length(bgenfiles)
-        memory: (4 * length(bgenfiles)) + " GB"
+        memory: (6 * length(bgenfiles)) + " GB"
         disks: "local-disk " + (length(bgenfiles) * ceil(size(bgenfiles[0], "G")) + 20) + " HDD"
         zones: "europe-west1-b"
         preemptible: 2
@@ -99,7 +99,7 @@ task combine {
     runtime {
         docker: "${docker}"
         cpu: 1
-        memory: "10 GB"
+        memory: "16 GB"
         disks: "local-disk 200 HDD"
         zones: "europe-west1-b"
         preemptible: 2
@@ -123,8 +123,7 @@ workflow test_combine {
     scatter (bgenfiles in bgenfiles2D) {
         call test {
             input: docker=docker, pheno=pheno, varList=varList, samplefile=samplefile,
-             bgenfiles=bgenfiles, bedfile=bedfile, covariates=covariates, option=option, bsamplefile=bsamplefile
-        }
+             bgenfiles=bgenfiles, bedfile=bedfile, covariates=covariates, option=option, bsamplefile=bsamplefile        }
     }
 
     call combine {

@@ -68,46 +68,48 @@ if(length(grep(",", opt$transmission))!=0){
 } else{
   transmissionOption <- opt$transmission}
 
+#https://groups.google.com/g/plink2-users/c/iaQn0AC-7SU let's see if the memory isssue is a reason
 
+temp <- strsplit(bgenfile,"/")[[1]] #split bgen name by /
+temp <- temp[length(temp)] #obtain just the bgen file without the dir
+bgenprefix <- substr(temp,1,nchar(temp)-5) #remove the extension .bgen from file
+bgenprefix
 
-#bgenfile <- "finngen_R6_19.3.bgen"
-#samplefile <- "R6_full_samples_T2D.sample"
-#transmissionOption <- 1
-#prefix <- ""
-#phenotype <- "T2D"
-#snprange <- "20210323_var_T2D_CVD.txt"
-#bsamplefile <- "../r6/R6_271341_samples.sample"
+temp <- strsplit(temp,"\\.")[[1]] #using the above, just obtaining the bgen basename
+temp <- strsplit(temp, "_")[[1]] #splitting the finngen name by _ to get the final part
+chrID <- temp[length(temp)] #the final part of the base name without the "." is the chr ID
+chrID
 
-cmd <- paste("plink --bgen ", bgenfile,
-" ref-unknown --sample ", bsamplefile,
-" --extract range ", snprange, " --allow-extra-chr --export bgen-1.3 --out filteredSNPs",
- sep="")
-
-#run plink command to filter for snps within the range 
-system(cmd)
-
-#transmissionOption <- 1
-#prefix <- ""
+varIncluded <- read.table(snprange, sep="\t")
+varIncluded <- varIncluded[varIncluded$V1 == chrID,]
+varIncluded <- glue::glue_collapse(varIncluded$V2, sep = " ")
+varIncluded
 
 list.files(pattern="*.bgen")
-file.size("filteredSNPs.bgen")
+#file.size("filteredSNPs.bgen")
 
 print("running snptest")
 # Run SNPTEST --------------
 #frequentist options 1=Additive, 2=Dominant, 3=Recessive, 4=General and 5=Heterozygote
-cmd <- paste("snptest -data filteredSNPs.bgen ", samplefile, " -o ", prefix, 
-  ".snptest.out -frequentist ", transmissionOption ," -method em -cov_names ", {covars_collapsed}, 
-  " -pheno ", phenotype, sep="")
+if(length(varIncluded) == 0){
+  print("no var to run")
+}else{
+  cmd <- paste("snptest -data ", bgenfile, " ", samplefile, " -o ", prefix, bgenprefix, 
+    ".snptest.out -frequentist ", transmissionOption ," -method em -cov_names ", {covars_collapsed}, 
+    " -pheno ", phenotype, " -snpid ", varIncluded, sep="")
+    print(cmd)
+    print(covars_collapsed)
+    system(cmd)
+    print("ran snptest")
+    list.files(pattern="*.snptest.out")
+}
+
 ## To sex stratify, use this flag! 
   #-stratify_on SEX_IMPUTED
 
-print(cmd)
-print(covars_collapsed)
-system(cmd)
-
-print("ran snptest")
-
 #print("cleaning snptest output for output lines that we want")
+#OR sed '/^#/d'
+#prefix, bgenprefix, ".snptest.out"
 #temp <- readLines(paste(prefix, ".snptest.out", sep="") ) 
 #temp <- t(as.data.frame(strsplit(temp[c(grep('alternate_ids', temp), grep('alternate_ids', temp)+1) ], " " ) ) )
 #rownames(temp) <- NULL
