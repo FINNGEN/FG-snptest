@@ -87,7 +87,7 @@ docker -- push gcr.io/finngen-refinery-dev/kv-snptest:0.1
 ```
 
 ### Edit the files in the `wdl` dir
-#### create the variant file
+#### Create the variant file
 The variant UCSC `.bed` file should contain the following information, **without** header
 | chromosome number |  start pos | stop pos |
 |------|--------------| --------------|
@@ -110,7 +110,7 @@ The FinnGen PLINK `.bim` file is on `gs://r6_data/plink/finngen_R6.bim` and shou
 5	chr5_52792437_G_A	0	52792437	A	G	5_52792437
 ```
 
-#### `.json` file
+#### Edit the `.json` file
 Note where all the files that you need to run are located.
 
 ##### Pick a transmission to analyze  
