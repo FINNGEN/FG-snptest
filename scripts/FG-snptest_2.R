@@ -94,9 +94,20 @@ print("running snptest")
 if(length(varIncluded) == 0){
   print("no var to run")
 }else{
+  
+  ## To sex stratify, use this flag! 
+  #-include_samples_where SEX_IMPUTED=1 #female
+  #-include_samples_where SEX_IMPUTED=0 #male
+  #remember to change the output line to include male vs female
+  #cmd <- paste("snptest -data ", bgenfile, " ", samplefile, " -o ", prefix, bgenprefix, 
+  #  ".male.snptest.out -frequentist ", transmissionOption ," -method em -include_samples_where SEX_IMPUTED=0 -cov_names ", 
+  #  {covars_collapsed}, " -pheno ", phenotype, " -snpid ", varIncluded, sep="")
+  
+  ## without stratification
   cmd <- paste("snptest -data ", bgenfile, " ", samplefile, " -o ", prefix, bgenprefix, 
-    ".snptest.out -frequentist ", transmissionOption ," -method em -cov_names ", {covars_collapsed}, 
-    " -pheno ", phenotype, " -snpid ", varIncluded, sep="")
+    ".snptest.out -frequentist ", transmissionOption ," -method em -cov_names ", 
+    {covars_collapsed}, " -pheno ", phenotype, " -snpid ", varIncluded, sep="")
+    
     print(cmd)
     print(covars_collapsed)
     system(cmd)
@@ -104,8 +115,7 @@ if(length(varIncluded) == 0){
     list.files(pattern="*.snptest.out")
 }
 
-## To sex stratify, use this flag! 
-  #-stratify_on SEX_IMPUTED
+
 
 #print("cleaning snptest output for output lines that we want")
 #OR sed '/^#/d'

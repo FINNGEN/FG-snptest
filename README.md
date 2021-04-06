@@ -112,6 +112,12 @@ The FinnGen PLINK `.bim` file is on `gs://r6_data/plink/finngen_R6.bim` and shou
 
 #### Edit the `.json` file
 Note where all the files that you need to run are located.
+Please also check on the appropriate docker image: stratified vs unstratified by sex.
+
+#### Edit the R script for stratified vs non-stratified: `scripts/FG-snptest_2.R`
+For **stratified**, uncomment lines 102-104, while editing the code to reflect **output** and **stratification variable**
+
+For **unstratified**, uncomment lines 107-109.
 
 ##### Pick a transmission to analyze  
 Most importantly, pick a transmission that you want to be analysed, particularly in line 19
@@ -201,9 +207,29 @@ gs://fg-cromwell_fresh/snptest/<WORKFLOW_ID>/call-test_combine/shard-*/sub.test_
 gs://fg-cromwell_fresh/snptest/<WORKFLOW_ID>/call-test_combine/shard-*/sub.test_combine/**/call-test/*.snptest.out
 ```
 
-
-Submission IDs that worked (FINALLY):
+# Results
+## Submission IDs that worked (FINALLY):
+### All phenotypes 
+Docker image used: `gcr.io/finngen-refinery-dev/kv-snptest:0.5`
 
 20210404: `e33af051-4528-4e1c-a42e-f97464a010d`  #CVD
 
 20210404: `acaa058e-e1e4-4fd6-96a8-a3631577a815` #T2D
+
+### Stratified analyses
+Docker image used (males): `gcr.io/finngen-refinery-dev/kv-snptest:0.5.0`
+Docker image used (females): `gcr.io/finngen-refinery-dev/kv-snptest:0.5.1`
+20210406: `b30ecdb4-b35e-46b4-ae4e-44be891947cf` #male CVD correct
+
+20210406: `0ab4cfd5-72de-4bfe-afa8-12caa9420f19` #male T2D correct
+
+20210406: `fb0d15d1-6935-4824-966c-d322280da1d4` #female_T2D correct
+
+20210406: `5fd02d46-6f12-4e1a-9046-14812040fbfd`  #female_CVD correct
+
+## Result file location
+All results sent to Txema over Slack on 4/5/2021 (all, zip) and 4/6/2021 (stratified, Dropbox)
+
+T2D: https://www.dropbox.com/sh/31gcl2j9e9u2iuj/AADCjvUeWqlUNHiDmtdHdLlra?dl=0
+
+CVD: https://www.dropbox.com/sh/czbcno65r1geblo/AABTEF1QacWXOWlQCiNNV8X-a?dl=0
