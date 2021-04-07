@@ -114,11 +114,6 @@ The FinnGen PLINK `.bim` file is on `gs://r6_data/plink/finngen_R6.bim` and shou
 Note where all the files that you need to run are located.
 Please also check on the appropriate docker image: stratified vs unstratified by sex.
 
-#### Edit the R script for stratified vs non-stratified: `scripts/FG-snptest_2.R`
-For **stratified**, uncomment lines 102-104, while editing the code to reflect **output** and **stratification variable**
-
-For **unstratified**, uncomment lines 107-109.
-
 ##### Pick a transmission to analyze  
 Most importantly, pick a transmission that you want to be analysed, particularly in line 19
     ```
@@ -138,6 +133,12 @@ Or you can also put in more than one transmission separated by commas
 ```
 zip wdl/snptest_sub.zip wdl/snptest_sub.wdl
 ```
+
+### Edit the files in the scripts dir (optional)
+#### stratified vs non-stratified: `scripts/FG-snptest_2.R`
+For **stratified**, uncomment lines 102-104, while editing the code to reflect **output** and **stratification variable**
+
+For **unstratified**, uncomment lines 107-109.
 
 ### Submission onto cromwell using `cromwell_interact.py`
 Script from Pietro that allows easy submission of `wdl` scripts onto cromwell found [here](https://github.com/FINNGEN/CromwellInteract) 
@@ -218,7 +219,9 @@ Docker image used: `gcr.io/finngen-refinery-dev/kv-snptest:0.5`
 
 ### Stratified analyses
 Docker image used (males): `gcr.io/finngen-refinery-dev/kv-snptest:0.5.0`
+
 Docker image used (females): `gcr.io/finngen-refinery-dev/kv-snptest:0.5.1`
+
 20210406: `b30ecdb4-b35e-46b4-ae4e-44be891947cf` #male CVD correct
 
 20210406: `0ab4cfd5-72de-4bfe-afa8-12caa9420f19` #male T2D correct
