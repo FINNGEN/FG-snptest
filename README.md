@@ -30,8 +30,6 @@ _Collapsed batches_:
 BATCH_AxiomGT1_b01_V2P2.calls + BATCH_AxiomGT1_b02_V2P2.calls + BATCH_AxiomGT1_b03_V2P2.calls + BATCH_AxiomGT1_b04_V2P2.calls + BATCH_AxiomGT1_b05_V2P2.calls + BATCH_AxiomGT1_b06_V2P2.calls + BATCH_AxiomGT1_b07_V2P2.calls + BATCH_AxiomGT1_b08_V2P2.calls + BATCH_AxiomGT1_b09_V2P2.calls + BATCH_AxiomGT1_b10_V2P2.calls + BATCH_AxiomGT1_b11_V2P2.calls + BATCH_AxiomGT1_b12_V2P2.calls + BATCH_AxiomGT1_b13_V2P2.calls + BATCH_AxiomGT1_b14_V2P2.calls + BATCH_AxiomGT1_b15_V2P2.calls + BATCH_AxiomGT1_b17_V2P2.calls + BATCH_AxiomGT1_b18_V2P2.calls + BATCH_AxiomGT1_b19_V2P2.calls + BATCH_AxiomGT1_b20_V2P2.calls + BATCH_AxiomGT1_b21_V2P2.calls + BATCH_AxiomGT1_b22_V2P2.calls + BATCH_AxiomGT1_b23_V2P2.calls + BATCH_AxiomGT1_b24_V2P2.calls + BATCH_AxiomGT1_b25_V2P2.calls + BATCH_AxiomGT1_b26_V2P2.calls + BATCH_AxiomGT1_b27_V2P2.calls + BATCH_AxiomGT1_b28_V2P2.calls + BATCH_AxiomGT1_b29_V2P2.calls + BATCH_AxiomGT1_b30_V2P2.calls + BATCH_AxiomGT1_b31_V2.calls + BATCH_AxiomGT1_b3234_V2.calls + BATCH_AxiomGT1_b33_V2.calls + BATCH_AxiomGT1_b35_V2.calls + BATCH_AxiomGT1_b36_V2.calls + BATCH_AxiomGT1_b37_V2.calls + BATCH_AxiomGT1_b38_V2.calls + BATCH_AxiomGT1_b39_V2.calls + BATCH_AxiomGT1_b40_V2.calls + BATCH_AxiomGT1_b41_V2.calls + BATCH_AxiomGT1_b42_V2.calls + BATCH_AxiomGT1_b43_V2.calls + BATCH_AxiomGT1_b44_V2.calls + BATCH_AxiomGT1_b45_V2.calls + BATCH_AxiomGT1_b46_V2.calls + BATCH_AxiomGT1_b47_V2.calls + BATCH_AxiomGT1_b48_V2.calls + BATCH_AxiomGT1_b49_V2.calls + BATCH_AxiomGT1_b50_V2.calls + BATCH_AxiomGT1_b51_V2.calls
 ```
 
-For the **T2D** phenotypes, we also included `covariate:BMI`
-
 
 ### (3) SNPs tested
 _Also included in the `src` folder_
